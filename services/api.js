@@ -2,21 +2,32 @@ import { create } from 'apisauce';
 
 const api = create({
 	// baseURL: 'http://parc.us-east-1.elasticbeanstalk.com',
-	baseURL: 'http://127.0.0.1:8000',
+	baseURL: 'https://petfindapi.herokuapp.com/',
 	headers: {
 		Accept: 'application/json',
-		'Content-Type': 'application/json'
+		'Content-Type': 'multipart/form-data'
 	}
 });
 
 api.addAsyncResponseTransform(async response => {
 	if (!response.ok) {
-		console.log(response);
 		throw response;
 	}
 });
 
 async function post(endpoint, params) {
+	const temp = new FormData();
+	temp.append('image', {
+		uri: params.uri,
+		name: params.name,
+		type: params.type
+	});
+	temp.append('contact', params.contact);
+	temp.append('description', params.description);
+	temp.append('lat', params.lat);
+	temp.append('long', params.long);
+	params = temp;
+
 	return await api
 		.post(endpoint, params, {
 			headers: {
@@ -24,11 +35,22 @@ async function post(endpoint, params) {
 			}
 		})
 		.then(response => {
-			response.data;
+			return response;
 		})
 		.catch(error => {
 			throw error;
 		});
 }
 
-export { post };
+async function get(endpoint) {
+	return await api
+		.get(endpoint)
+		.then(response => {
+			return response;
+		})
+		.catch(error => {
+			throw error;
+		});
+}
+
+export { post, get };

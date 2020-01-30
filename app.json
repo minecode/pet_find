@@ -1,28 +1,38 @@
 {
-  "expo": {
-    "name": "Pet Find",
-    "slug": "pet_find",
-    "privacy": "public",
-    "sdkVersion": "36.0.0",
-    "platforms": ["ios", "android", "web"],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
-    "androidStatusBar": {
-      "backgroundColor": "#ffffff",
-      "barStyle": "dark-content"
-    }
-  }
+	"expo": {
+		"name": "Pet Find",
+		"description": "Uma aplicação que o vai ajudar a encontrar o seu animal de estimação!",
+		"slug": "pet_find",
+		"privacy": "public",
+		"sdkVersion": "36.0.0",
+		"platforms": ["ios", "android", "web"],
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/petfind.png",
+		"splash": {
+			"image": "./assets/petfind.png",
+			"resizeMode": "contain",
+			"backgroundColor": "#ffffff"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": ["**/*"],
+		"ios": {
+			"supportsTablet": true,
+			"config": {
+				"googleMobileAdsAppId": "ca-app-pub-3081462140003126~6758188074"
+			}
+		},
+		"android": {
+			"package": "pt.fhenriques.petfind",
+			"config": {
+				"googleMobileAdsAppId": "ca-app-pub-3081462140003126~6758188074"
+			}
+		},
+		"androidStatusBar": {
+			"backgroundColor": "#ffffff",
+			"barStyle": "dark-content"
+		}
+	}
 }

@@ -1,34 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	TextInput,
-	Platform,
 	TouchableOpacity,
 	Text,
 	View,
 	ScrollView,
 	StatusBar,
 	Dimensions,
-	Image
+	Image,
+	Picker,
+	ActivityIndicator
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import styles from '../../style';
-import Constants from 'expo-constants';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { Icon } from 'react-native-elements';
 import { post } from '../../services/api';
+import Modal from 'react-native-modal';
+import {
+	setTestDeviceIDAsync,
+	AdMobBanner,
+	AdMobInterstitial,
+	PublisherBanner,
+	AdMobRewarded
+} from 'expo-ads-admob';
 
-class AddScreen extends React.Component {
-	state = {
-		contact: null,
-		description: null,
-		image: null,
-		lat: null,
-		long: null
-	};
+function AddScreen(props) {
+	const [contact, setContact] = useState(null);
+	const [description, setDescription] = useState(null);
+	const [uri, setUri] = useState(null);
+	const [lat, setLat] = useState(null);
+	const [long, setLong] = useState(null);
+	const [type, setType] = useState(null);
+	const [name, setName] = useState(null);
+	const [contactError, setContactError] = useState(null);
+	const [imageError, setImageError] = useState(null);
+	const [typeAdd, setTypeAdd] = useState('lost');
+	const [added, setAdded] = useState(false);
+	const [errorMessage, setErrorMessage] = useState(false);
+	const [loading, setLoading] = useState(false);
 
-	_pickImage = async () => {
+	const pickImage = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
@@ -37,206 +51,436 @@ class AddScreen extends React.Component {
 		});
 
 		if (!result.cancelled) {
-			this.setState({ image: result.uri });
+			const dots = result.uri.split('.');
+			const slashes = result.uri.split('/');
+			const mime =
+				dots[dots.length - 1] === 'jpg'
+					? 'jpeg'
+					: dots[dots.length - 1];
+			setUri(result.uri);
+			setType('image/' + mime);
+			setName(slashes[slashes.length - 1]);
 		}
 	};
 
-	getPermissionAsync = async () => {
+	const getPermissionAsync = async () => {
 		const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
 		if (status !== 'granted') {
 			alert('Sorry, we need camera roll permissions to make this work!');
 		}
 	};
 
-	_getLocationAsync = async () => {
+	const getLocationAsync = async () => {
 		let { status } = await Permissions.askAsync(Permissions.LOCATION);
 		if (status !== 'granted') {
-			this.setState({
-				errorMessage: 'Permission to access location was denied'
-			});
+			setErrorMessage('Permission to access location was denied');
 		}
 
 		let location = await Location.getCurrentPositionAsync({});
-		this.setState({
-			lat: location.coords.latitude,
-			long: location.coords.longitude
-		});
+		setLat(location.coords.latitude);
+		setLong(location.coords.longitude);
 	};
 
-	submit = async () => {
-		console.log(this.state);
-	};
+	useEffect(() => {
+		setTestDeviceIDAsync('EMULATOR');
+		getPermissionAsync();
+		getLocationAsync();
+	}, []);
 
-	componentDidMount() {
-		this.getPermissionAsync();
-	}
-
-	render() {
-		let { image } = this.state;
-		return (
-			<SafeAreaView
-				style={{
-					flex: 1,
-					backgroundColor: '#f5f5ff'
-				}}>
-				<StatusBar
-					translucent
-					backgroundColor={'#f5f5ff'}
-					barStyle='dark-content'
-					animated
-				/>
-				<ScrollView>
-					<View style={styles.container}>
+	return (
+		<View
+			style={{
+				flex: 1,
+				backgroundColor: '#f3f3f3',
+				paddingVertical: 20
+			}}>
+			<AdMobBanner
+				bannerSize='fullBanner'
+				adUnitID='ca-app-pub-3081462140003126/6566616388' // Test ID, Replace with your-admob-unit-id
+				// testDeviceID='EMULATOR'
+				servePersonalizedAds // true or false
+				onDidFailToReceiveAdWithError={this.bannerError}
+			/>
+			<Modal
+				isVisible={loading}
+				coverScreen={false}
+				backdropColor={'white'}
+				backdropOpacity={0.8}>
+				<View
+					style={{
+						flexDirection: 'row',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}>
+					<ActivityIndicator size='large' color='#526b78' />
+					<Text style={{ color: '#526b78' }}> A enviar dados...</Text>
+				</View>
+			</Modal>
+			<StatusBar
+				translucent
+				backgroundColor={'#B5EAD7'}
+				barStyle='dark-content'
+				animated
+			/>
+			<ScrollView>
+				<View style={styles.container}>
+					{errorMessage && (
 						<View
 							style={
 								(styles.row,
-								{ marginTop: 20, marginHorizontal: 20 })
-							}>
-							<Text
-								style={{
-									fontWeight: 'bold',
-									fontSize: 20,
-									color: '#FF9AA2'
-								}}>
-								Contacto
-							</Text>
-						</View>
-						<View style={styles.row}>
-							<TextInput
-								ref={input => {
-									this.contact = input;
-								}}
-								placeholder='Contacto'
-								returnKeyType='next'
-								onSubmitEditing={() => {
-									this.description.focus();
-								}}
-								onChangeText={context => {
-									this.setState({
-										contact: context
-									});
-								}}
-							/>
-						</View>
-						<View
-							style={
-								(styles.row,
-								{ marginTop: 20, marginHorizontal: 20 })
-							}>
-							<Text
-								style={{
-									fontWeight: 'bold',
-									fontSize: 20,
-									color: '#FF9AA2'
-								}}>
-								Descrição
-							</Text>
-						</View>
-						<View style={styles.row}>
-							<TextInput
-								multiline={true}
-								style={{ textAlignVertical: 'top' }}
-								numberOfLines={8}
-								blurOnSubmit={false}
-								ref={input => {
-									this.description = input;
-								}}
-								placeholder='Descrição'
-								returnKeyType='done'
-								onSubmitEditing={() => {
-									this.description.focus();
-								}}
-								onChangeText={context => {
-									this.setState({
-										description: context
-									});
-								}}
-							/>
-						</View>
-						<View style={(styles.row, { alignItems: 'center' })}>
-							<TouchableOpacity
-								onPress={this._pickImage}
-								style={{
-									backgroundColor: '#B5EAD7',
+								{
+									marginVertical: 20,
+									marginHorizontal: 20,
 									borderRadius: 25,
 									height: 50,
 									width: Dimensions.get('window').width - 40,
 									alignItems: 'center',
 									justifyContent: 'center'
+								})
+							}>
+							<Text
+								style={{
+									fontWeight: 'bold',
+									fontSize: 20,
+									color: '#FF9AA2',
+									textAlign: 'center'
 								}}>
-								<View style={styles.row}>
-									<Icon
-										name='image'
-										type='font-awesome'
-										color={'#526b78'}
-									/>
-									<Text style={{ color: '#526b78' }}>
-										{' '}
-										Carregar fotografia
-									</Text>
-								</View>
-							</TouchableOpacity>
+								{errorMessage}
+							</Text>
 						</View>
-						{image && (
+					)}
+					{added && (
+						<>
 							<View
 								style={
 									(styles.row,
 									{
-										alignItems: 'center',
-										marginTop: 20,
-										marginHorizontal: 20
-									})
-								}>
-								<Image
-									source={{ uri: image }}
-									style={{
+										marginVertical: 20,
+										marginHorizontal: 20,
+										borderRadius: 25,
+										height: 50,
 										width:
 											Dimensions.get('window').width - 40,
-										height:
-											(Dimensions.get('window').width -
-												40) *
-											(3 / 4),
-										borderRadius: 5
+										alignItems: 'center',
+										justifyContent: 'center'
+									})
+								}>
+								{typeAdd === 'lost' && (
+									<Text
+										style={{
+											fontWeight: 'bold',
+											fontSize: 20,
+											color: '#526b78',
+											textAlign: 'center'
+										}}>
+										Novo animal perdido adicionado!
+									</Text>
+								)}
+								{typeAdd === 'findings' && (
+									<Text
+										style={{
+											fontWeight: 'bold',
+											fontSize: 20,
+											color: '#526b78',
+											textAlign: 'center'
+										}}>
+										Novo animal encontrado adicionado!
+									</Text>
+								)}
+							</View>
+							<View style={styles.row}>
+								<TouchableOpacity
+									onPress={() => setAdded(false)}
+									style={{
+										backgroundColor: '#B5EAD7',
+										borderRadius: 25,
+										height: 50,
+										width:
+											Dimensions.get('window').width - 40,
+										alignItems: 'center',
+										justifyContent: 'center'
+									}}>
+									<View style={styles.row}>
+										<Icon
+											name='plus'
+											type='font-awesome'
+											color={'#526b78'}
+										/>
+										<Text style={{ color: '#526b78' }}>
+											{' '}
+											Adiconar novo animal
+										</Text>
+									</View>
+								</TouchableOpacity>
+							</View>
+						</>
+					)}
+					{!added && (
+						<>
+							<View style={styles.row}>
+								<View
+									style={{
+										flexDirection: 'row',
+										alignItems: 'center',
+										justifyContent: 'flex-start'
+									}}>
+									<Icon
+										name='paw'
+										type='font-awesome'
+										color={'#FF9AA2'}
+									/>
+									<Text
+										style={{
+											fontWeight: 'bold',
+											fontSize: 20,
+											color: '#FF9AA2'
+										}}>
+										{' '}
+										Animal:{' '}
+									</Text>
+								</View>
+								<Picker
+									selectedValue={typeAdd}
+									style={{ width: 150, color: '#526b78' }}
+									onValueChange={(itemValue, itemIndex) => {
+										setTypeAdd(itemValue);
+									}}>
+									<Picker.Item label='Perdido' value='lost' />
+									<Picker.Item
+										label='Encontrado'
+										value='findings'
+									/>
+								</Picker>
+							</View>
+							<View
+								style={
+									(styles.row,
+									{ marginTop: 20, marginHorizontal: 20 })
+								}>
+								<View
+									style={{
+										flexDirection: 'row',
+										alignItems: 'center',
+										justifyContent: 'flex-start'
+									}}>
+									<Icon
+										name='address-book'
+										type='font-awesome'
+										color={'#FF9AA2'}
+									/>
+									<Text
+										style={{
+											fontWeight: 'bold',
+											fontSize: 20,
+											color: '#FF9AA2'
+										}}>
+										{' '}
+										Contacto:
+									</Text>
+								</View>
+								{contactError && (
+									<Text
+										style={{
+											color: 'red',
+											marginVertical: 5
+										}}>
+										{contactError}
+									</Text>
+								)}
+							</View>
+							<View style={styles.row}>
+								<TextInput
+									placeholder='Contacto'
+									returnKeyType='next'
+									onChangeText={context => {
+										setContact(context);
 									}}
 								/>
 							</View>
-						)}
-						<View
-							style={
-								(styles.row,
-								{ alignItems: 'center', marginTop: 20 })
-							}>
-							<TouchableOpacity
-								style={{
-									backgroundColor: '#B5EAD7',
-									borderRadius: 25,
-									height: 50,
-									width: Dimensions.get('window').width - 40,
-									alignItems: 'center',
-									justifyContent: 'center'
-								}}
-								onPress={async () => {
-									await this._getLocationAsync();
-									post('/api/lost/', this.state);
-								}}>
-								<View style={styles.row}>
+							<View
+								style={
+									(styles.row,
+									{ marginTop: 20, marginHorizontal: 20 })
+								}>
+								<View
+									style={{
+										flexDirection: 'row',
+										alignItems: 'center',
+										justifyContent: 'flex-start'
+									}}>
 									<Icon
-										name='plus'
+										name='search'
 										type='font-awesome'
-										color={'#526b78'}
+										color={'#FF9AA2'}
 									/>
-									<Text style={{ color: '#526b78' }}>
+									<Text
+										style={{
+											fontWeight: 'bold',
+											fontSize: 20,
+											color: '#FF9AA2'
+										}}>
 										{' '}
-										Adicionar
+										Descrição:
 									</Text>
 								</View>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</ScrollView>
-			</SafeAreaView>
-		);
-	}
+							</View>
+							<View style={styles.row}>
+								<TextInput
+									multiline={true}
+									style={{ textAlignVertical: 'top' }}
+									numberOfLines={8}
+									blurOnSubmit={false}
+									placeholder='Descrição'
+									returnKeyType='done'
+									onChangeText={context => {
+										setDescription(context);
+									}}
+								/>
+							</View>
+							<View
+								style={(styles.row, { alignItems: 'center' })}>
+								{imageError && (
+									<Text
+										style={{
+											color: 'red',
+											marginBottom: 5
+										}}>
+										{imageError}
+									</Text>
+								)}
+								<TouchableOpacity
+									onPress={pickImage}
+									style={{
+										backgroundColor: '#B5EAD7',
+										borderRadius: 25,
+										height: 50,
+										width:
+											Dimensions.get('window').width - 40,
+										alignItems: 'center',
+										justifyContent: 'center'
+									}}>
+									<View style={styles.row}>
+										<Icon
+											name='image'
+											type='font-awesome'
+											color={'#526b78'}
+										/>
+										<Text style={{ color: '#526b78' }}>
+											{' '}
+											Carregar fotografia
+										</Text>
+									</View>
+								</TouchableOpacity>
+							</View>
+
+							{uri && (
+								<View
+									style={
+										(styles.row,
+										{
+											alignItems: 'center',
+											marginTop: 20,
+											marginHorizontal: 20
+										})
+									}>
+									<Image
+										source={{ uri: uri }}
+										style={{
+											width:
+												Dimensions.get('window').width -
+												40,
+											height:
+												(Dimensions.get('window')
+													.width -
+													40) *
+												(3 / 4),
+											borderRadius: 5
+										}}
+									/>
+								</View>
+							)}
+							<View
+								style={
+									(styles.row,
+									{ alignItems: 'center', marginTop: 20 })
+								}>
+								<TouchableOpacity
+									style={{
+										backgroundColor: '#B5EAD7',
+										borderRadius: 25,
+										height: 50,
+										width:
+											Dimensions.get('window').width - 40,
+										alignItems: 'center',
+										justifyContent: 'center'
+									}}
+									onPress={async () => {
+										setLoading(true);
+										setErrorMessage(null);
+										setContactError(null);
+										setImageError(null);
+										if (contact === null) {
+											setContactError(
+												'Este campo é obrigatório'
+											);
+										}
+										if (uri === null) {
+											setImageError(
+												'Este campo é obrigatório'
+											);
+										}
+										if (contact !== null && uri !== null) {
+											if (lat !== null && long !== null) {
+												post('/api/' + typeAdd + '/', {
+													contact: contact,
+													description: description,
+													lat: lat,
+													long: long,
+													uri: uri,
+													name: name,
+													type: type
+												})
+													.then(response => {
+														if (response.ok) {
+															setAdded(true);
+															setContact(null);
+															setDescription(
+																null
+															);
+															setUri(null);
+														}
+														setLoading(false);
+													})
+													.catch(error => {
+														setErrorMessage(
+															'Ocorreu um erro. Por favor, tente novamente mais tarde.'
+														);
+														setLoading(false);
+													});
+											}
+										} else {
+											setLoading(false);
+										}
+									}}>
+									<View style={styles.row}>
+										<Icon
+											name='plus'
+											type='font-awesome'
+											color={'#526b78'}
+										/>
+										<Text style={{ color: '#526b78' }}>
+											{' '}
+											Adicionar
+										</Text>
+									</View>
+								</TouchableOpacity>
+							</View>
+						</>
+					)}
+				</View>
+			</ScrollView>
+		</View>
+	);
 }
 
 export default AddScreen;
