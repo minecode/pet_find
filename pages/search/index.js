@@ -8,7 +8,8 @@ import {
 	ScrollView,
 	RefreshControl,
 	ActivityIndicator,
-	Dimensions
+	Dimensions,
+	TouchableOpacity
 } from 'react-native';
 import styles from '../../style';
 import { Card } from 'react-native-elements';
@@ -25,6 +26,7 @@ import {
 	PublisherBanner,
 	AdMobRewarded
 } from 'expo-ads-admob';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function SearchScreen(props) {
 	function wait(timeout) {
@@ -33,6 +35,9 @@ function SearchScreen(props) {
 		});
 	}
 
+	const [prev, setPrev] = useState(null);
+	const [next, setNext] = useState(null);
+	const [link, setLink] = useState(null);
 	const [refreshing, setRefreshing] = useState(true);
 	const [lat, setLat] = useState(null);
 	const [long, setLong] = useState(null);
@@ -57,21 +62,26 @@ function SearchScreen(props) {
 	const getAnimals = async () => {
 		setLoading(true);
 		get(
-			'/api/list/' +
-				lat +
-				'/' +
-				long +
-				'/' +
-				time +
-				'/' +
-				distance +
-				'/' +
-				type +
-				'/'
+			link == null
+				? '/api/list/' +
+						lat +
+						'/' +
+						long +
+						'/' +
+						time +
+						'/' +
+						distance +
+						'/' +
+						type +
+						'/' +
+						'time/'
+				: '/api/' + link.split('/api/')[1]
 		)
 			.then(response => {
 				setLoading(false);
 				setAnimals(response.data.results);
+				setNext(response.data.next);
+				setPrev(response.data.previous);
 			})
 			.catch(error => {
 				setLoading(false);
@@ -79,7 +89,12 @@ function SearchScreen(props) {
 	};
 
 	const onRefresh = React.useCallback(() => {
+		setLoading(true);
 		setRefreshing(true);
+		setLink(null);
+		setNext(null);
+		setPrev(null);
+		setLoading(false);
 	}, [refreshing]);
 
 	useEffect(() => {
@@ -104,214 +119,251 @@ function SearchScreen(props) {
 			getAnimals();
 			setRefreshing(false);
 		}
-	}, [lat, long, distance, time, type, refreshing]);
+	}, [lat, long, distance, time, type, refreshing, link]);
 
 	return (
-		<View
-			style={{
-				flex: 1,
-				backgroundColor: '#f3f3f3',
-				paddingTop: 20
-			}}>
-			<AdMobBanner
-				bannerSize='fullBanner'
-				adUnitID='ca-app-pub-3081462140003126/6566616388' // Test ID, Replace with your-admob-unit-id
-				// testDeviceID='EMULATOR'
-				servePersonalizedAds // true or false
-				onDidFailToReceiveAdWithError={this.bannerError}
-			/>
-			<Modal
-				isVisible={loading}
-				coverScreen={false}
-				backdropColor={'white'}
-				backdropOpacity={0.8}>
-				<View
-					style={{
-						flexDirection: 'row',
-						alignItems: 'center',
-						justifyContent: 'center'
-					}}>
-					<ActivityIndicator size='large' color='#526b78' />
-					<Text style={{ color: '#526b78' }}> A carregar...</Text>
-				</View>
-			</Modal>
-			<StatusBar
-				translucent
-				backgroundColor={'#B5EAD7'}
-				barStyle='dark-content'
-				animated
-			/>
-
-			<ScrollView
-				refreshControl={
-					<RefreshControl
-						refreshing={refreshing}
-						onRefresh={onRefresh}
-					/>
-				}>
-				<View style={styles.container}>
-					<View style={styles.row}>
-						<View
-							style={{
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'space-between'
-							}}>
-							<Icon
-								name='paw'
-								type='font-awesome'
-								color={'#FF9AA2'}
-							/>
-							<Text
-								style={{
-									fontWeight: 'bold',
-									fontSize: 20,
-									color: '#FF9AA2'
-								}}>
-								{' '}
-								Animal:{' '}
-							</Text>
-						</View>
-						<Picker
-							selectedValue={type}
-							style={{ width: 150, color: '#526b78' }}
-							onValueChange={(itemValue, itemIndex) => {
-								setType(itemValue);
-							}}>
-							<Picker.Item label='Encontrado' value='findings' />
-							<Picker.Item label='Perdido' value='lost' />
-						</Picker>
+		<SafeAreaView style={{ flex: 1, backgroundColor: '#f3f3f3' }}>
+			<View>
+				<Modal
+					isVisible={false}
+					coverScreen={false}
+					backdropColor={'white'}
+					backdropOpacity={0.8}>
+					<View
+						style={{
+							flexDirection: 'row',
+							alignItems: 'center',
+							justifyContent: 'center'
+						}}>
+						<ActivityIndicator size='large' color='#526b78' />
+						<Text style={{ color: '#526b78' }}> A carregar...</Text>
 					</View>
-					<View style={styles.row}>
-						<View
-							style={{
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'space-between'
-							}}>
-							<Icon
-								name='arrows'
-								type='font-awesome'
-								color={'#FF9AA2'}
-							/>
-							<Text
+				</Modal>
+				<ScrollView
+					refreshControl={
+						<RefreshControl
+							refreshing={loading}
+							onRefresh={onRefresh}
+						/>
+					}>
+					<View style={styles.container}>
+						<View style={styles.row}>
+							<View
 								style={{
-									fontWeight: 'bold',
-									fontSize: 20,
-									color: '#FF9AA2'
-								}}>
-								{' '}
-								Distância:{' '}
-							</Text>
-						</View>
-						<Picker
-							selectedValue={distance}
-							style={{ width: 150, color: '#526b78' }}
-							onValueChange={(itemValue, itemIndex) => {
-								setDistance(itemValue);
-							}}>
-							<Picker.Item label='1 km' value='1' />
-							<Picker.Item label='5 km' value='5' />
-							<Picker.Item label='15 km' value='15' />
-							<Picker.Item label='30 km' value='30' />
-							<Picker.Item label='+50 km' value='50' />
-						</Picker>
-					</View>
-					<View style={styles.row}>
-						<View
-							style={{
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'space-between'
-							}}>
-							<Icon
-								name='hourglass-end'
-								type='font-awesome'
-								color={'#FF9AA2'}
-							/>
-							<Text
-								style={{
-									fontWeight: 'bold',
-									fontSize: 20,
-									color: '#FF9AA2'
-								}}>
-								{' '}
-								Últimos:{' '}
-							</Text>
-						</View>
-						<Picker
-							selectedValue={time}
-							style={{ width: 150, color: '#526b78' }}
-							onValueChange={(itemValue, itemIndex) => {
-								setTime(itemValue);
-							}}>
-							<Picker.Item label='15 dias' value='15' />
-							<Picker.Item label='30 dias' value='30' />
-							<Picker.Item label='2 meses' value='2' />
-							<Picker.Item label='6 meses' value='6' />
-							<Picker.Item label='+ 1 ano' value='1' />
-						</Picker>
-					</View>
-
-					{animals &&
-						!loading &&
-						animals.map((a, i) => {
-							return (
-								<Card containerStyle={{ padding: 0 }} key={i}>
-									<Image
-										style={{
-											height: 300
-										}}
-										resizeMode='cover'
-										source={{
-											uri: a.url
-										}}
-									/>
-									<Text
-										style={{
-											padding: 20,
-											color: '#526b78'
-										}}>
-										Localizado a {a.distance} km à {a.time}.
-									</Text>
-									<Text
-										style={{
-											padding: 20,
-											color: '#526b78',
-											fontWeight: 'bold'
-										}}>
-										Contacto: {a.contact}
-									</Text>
-								</Card>
-							);
-						})}
-					{animals && !loading && animals.length === 0 && (
-						<View
-							style={
-								(styles.row,
-								{
-									marginVertical: 20,
-									marginHorizontal: 20,
-									borderRadius: 25,
-									height: 50,
-									width: Dimensions.get('window').width - 40,
+									flexDirection: 'row',
 									alignItems: 'center',
-									justifyContent: 'center'
-								})
-							}>
-							<Text
-								style={{
-									fontWeight: 'bold',
-									fontSize: 20,
-									color: '#526b78'
+									justifyContent: 'space-between'
 								}}>
-								Nenhum resultado na pesquisa!
-							</Text>
+								<Icon
+									name='paw'
+									type='font-awesome'
+									color={'#FF9AA2'}
+								/>
+								<Text
+									style={{
+										fontWeight: 'bold',
+										fontSize: 20,
+										color: '#FF9AA2'
+									}}>
+									{' '}
+									Animal:{' '}
+								</Text>
+							</View>
+							<Picker
+								selectedValue={type}
+								style={{ width: 150, color: '#526b78' }}
+								onValueChange={(itemValue, itemIndex) => {
+									setType(itemValue);
+								}}>
+								<Picker.Item
+									label='Encontrado'
+									value='findings'
+								/>
+								<Picker.Item label='Perdido' value='lost' />
+								<Picker.Item
+									label='Para adoção'
+									value='adoption'
+								/>
+							</Picker>
 						</View>
-					)}
-				</View>
-			</ScrollView>
-		</View>
+						<View style={styles.row}>
+							<View
+								style={{
+									flexDirection: 'row',
+									alignItems: 'center',
+									justifyContent: 'space-between'
+								}}>
+								<Icon
+									name='arrows'
+									type='font-awesome'
+									color={'#FF9AA2'}
+								/>
+								<Text
+									style={{
+										fontWeight: 'bold',
+										fontSize: 20,
+										color: '#FF9AA2'
+									}}>
+									{' '}
+									Distância:{' '}
+								</Text>
+							</View>
+							<Picker
+								selectedValue={distance}
+								style={{ width: 150, color: '#526b78' }}
+								onValueChange={(itemValue, itemIndex) => {
+									setDistance(itemValue);
+								}}>
+								<Picker.Item label='1 km' value='1' />
+								<Picker.Item label='5 km' value='5' />
+								<Picker.Item label='15 km' value='15' />
+								<Picker.Item label='30 km' value='30' />
+								<Picker.Item label='+50 km' value='50' />
+							</Picker>
+						</View>
+						<View style={styles.row}>
+							<View
+								style={{
+									flexDirection: 'row',
+									alignItems: 'center',
+									justifyContent: 'space-between'
+								}}>
+								<Icon
+									name='hourglass-end'
+									type='font-awesome'
+									color={'#FF9AA2'}
+								/>
+								<Text
+									style={{
+										fontWeight: 'bold',
+										fontSize: 20,
+										color: '#FF9AA2'
+									}}>
+									{' '}
+									Últimos:{' '}
+								</Text>
+							</View>
+							<Picker
+								selectedValue={time}
+								style={{ width: 150, color: '#526b78' }}
+								onValueChange={(itemValue, itemIndex) => {
+									setTime(itemValue);
+								}}>
+								<Picker.Item label='15 dias' value='15' />
+								<Picker.Item label='30 dias' value='30' />
+								<Picker.Item label='2 meses' value='2' />
+								<Picker.Item label='6 meses' value='6' />
+								<Picker.Item label='+ 1 ano' value='1' />
+							</Picker>
+						</View>
+
+						{animals &&
+							!loading &&
+							animals.map((a, i) => {
+								return (
+									<Card
+										containerStyle={{ padding: 0 }}
+										key={i}>
+										<Image
+											style={{
+												height: 300
+											}}
+											resizeMode='cover'
+											source={{
+												uri: a.url
+											}}
+										/>
+										<Text
+											style={{
+												padding: 20,
+												color: '#526b78'
+											}}>
+											Localizado a {a.distance} km à{' '}
+											{a.time}.
+										</Text>
+										<Text
+											style={{
+												padding: 20,
+												color: '#526b78',
+												fontWeight: 'bold'
+											}}>
+											Contacto: {a.contact}
+										</Text>
+									</Card>
+								);
+							})}
+						{animals && !loading && animals.length === 0 && (
+							<View
+								style={
+									(styles.row,
+									{
+										marginVertical: 20,
+										marginHorizontal: 20,
+										borderRadius: 25,
+										height: 50,
+										width:
+											Dimensions.get('window').width - 40,
+										alignItems: 'center',
+										justifyContent: 'center'
+									})
+								}>
+								<Text
+									style={{
+										fontWeight: 'bold',
+										fontSize: 20,
+										color: '#526b78'
+									}}>
+									Nenhum resultado na pesquisa!
+								</Text>
+							</View>
+						)}
+						<View
+							style={{
+								flexDirection: 'row',
+								alignItems: 'center',
+								justifyContent: 'space-around'
+							}}>
+							{prev && (
+								<TouchableOpacity
+									onPress={() => {
+										setLink(prev);
+									}}
+									style={{
+										borderRadius: 25,
+										height: 50,
+										alignItems: 'center',
+										justifyContent: 'center'
+									}}>
+									<Icon
+										name='arrow-left'
+										type='font-awesome'
+										color={'#526b78'}
+									/>
+								</TouchableOpacity>
+							)}
+							{next && (
+								<TouchableOpacity
+									onPress={() => {
+										setLink(next);
+									}}
+									style={{
+										borderRadius: 25,
+										height: 50,
+										alignItems: 'center',
+										justifyContent: 'center'
+									}}>
+									<Icon
+										name='arrow-right'
+										type='font-awesome'
+										color={'#526b78'}
+									/>
+								</TouchableOpacity>
+							)}
+						</View>
+					</View>
+				</ScrollView>
+			</View>
+		</SafeAreaView>
 	);
 }
 
