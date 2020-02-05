@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-	StatusBar,
 	View,
 	Picker,
 	Text,
@@ -19,16 +18,12 @@ import * as Permissions from 'expo-permissions';
 import { get } from '../../services/api';
 import Modal from 'react-native-modal';
 import { Icon } from 'react-native-elements';
-import {
-	setTestDeviceIDAsync,
-	AdMobBanner,
-	AdMobInterstitial,
-	PublisherBanner,
-	AdMobRewarded
-} from 'expo-ads-admob';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { setTestDeviceIDAsync } from 'expo-ads-admob';
+import { SafeAreaView } from 'react-navigation';
 
 function SearchScreen(props) {
+	SafeAreaView.setStatusBarHeight(0);
+
 	function wait(timeout) {
 		return new Promise(resolve => {
 			setTimeout(resolve, timeout);
@@ -121,6 +116,8 @@ function SearchScreen(props) {
 		}
 	}, [lat, long, distance, time, type, refreshing, link]);
 
+	const { navigate } = props.navigation;
+
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: '#f3f3f3' }}>
 			<View>
@@ -128,13 +125,15 @@ function SearchScreen(props) {
 					isVisible={false}
 					coverScreen={false}
 					backdropColor={'white'}
-					backdropOpacity={0.8}>
+					backdropOpacity={0.8}
+				>
 					<View
 						style={{
 							flexDirection: 'row',
 							alignItems: 'center',
 							justifyContent: 'center'
-						}}>
+						}}
+					>
 						<ActivityIndicator size='large' color='#526b78' />
 						<Text style={{ color: '#526b78' }}> A carregar...</Text>
 					</View>
@@ -145,7 +144,8 @@ function SearchScreen(props) {
 							refreshing={loading}
 							onRefresh={onRefresh}
 						/>
-					}>
+					}
+				>
 					<View style={styles.container}>
 						<View style={styles.row}>
 							<View
@@ -153,7 +153,8 @@ function SearchScreen(props) {
 									flexDirection: 'row',
 									alignItems: 'center',
 									justifyContent: 'space-between'
-								}}>
+								}}
+							>
 								<Icon
 									name='paw'
 									type='font-awesome'
@@ -164,7 +165,8 @@ function SearchScreen(props) {
 										fontWeight: 'bold',
 										fontSize: 20,
 										color: '#FF9AA2'
-									}}>
+									}}
+								>
 									{' '}
 									Animal:{' '}
 								</Text>
@@ -174,7 +176,8 @@ function SearchScreen(props) {
 								style={{ width: 150, color: '#526b78' }}
 								onValueChange={(itemValue, itemIndex) => {
 									setType(itemValue);
-								}}>
+								}}
+							>
 								<Picker.Item
 									label='Encontrado'
 									value='findings'
@@ -192,7 +195,8 @@ function SearchScreen(props) {
 									flexDirection: 'row',
 									alignItems: 'center',
 									justifyContent: 'space-between'
-								}}>
+								}}
+							>
 								<Icon
 									name='arrows'
 									type='font-awesome'
@@ -203,7 +207,8 @@ function SearchScreen(props) {
 										fontWeight: 'bold',
 										fontSize: 20,
 										color: '#FF9AA2'
-									}}>
+									}}
+								>
 									{' '}
 									Distância:{' '}
 								</Text>
@@ -213,7 +218,8 @@ function SearchScreen(props) {
 								style={{ width: 150, color: '#526b78' }}
 								onValueChange={(itemValue, itemIndex) => {
 									setDistance(itemValue);
-								}}>
+								}}
+							>
 								<Picker.Item label='1 km' value='1' />
 								<Picker.Item label='5 km' value='5' />
 								<Picker.Item label='15 km' value='15' />
@@ -227,7 +233,8 @@ function SearchScreen(props) {
 									flexDirection: 'row',
 									alignItems: 'center',
 									justifyContent: 'space-between'
-								}}>
+								}}
+							>
 								<Icon
 									name='hourglass-end'
 									type='font-awesome'
@@ -238,7 +245,8 @@ function SearchScreen(props) {
 										fontWeight: 'bold',
 										fontSize: 20,
 										color: '#FF9AA2'
-									}}>
+									}}
+								>
 									{' '}
 									Últimos:{' '}
 								</Text>
@@ -248,7 +256,8 @@ function SearchScreen(props) {
 								style={{ width: 150, color: '#526b78' }}
 								onValueChange={(itemValue, itemIndex) => {
 									setTime(itemValue);
-								}}>
+								}}
+							>
 								<Picker.Item label='15 dias' value='15' />
 								<Picker.Item label='30 dias' value='30' />
 								<Picker.Item label='2 meses' value='2' />
@@ -262,8 +271,9 @@ function SearchScreen(props) {
 							animals.map((a, i) => {
 								return (
 									<Card
+										key={i}
 										containerStyle={{ padding: 0 }}
-										key={i}>
+									>
 										<Image
 											style={{
 												height: 300
@@ -277,18 +287,67 @@ function SearchScreen(props) {
 											style={{
 												padding: 20,
 												color: '#526b78'
-											}}>
+											}}
+										>
 											Localizado a {a.distance} km à{' '}
 											{a.time}.
 										</Text>
-										<Text
-											style={{
-												padding: 20,
-												color: '#526b78',
-												fontWeight: 'bold'
-											}}>
-											Contacto: {a.contact}
-										</Text>
+										<View
+											style={[
+												styles.row,
+												{
+													justifyContent:
+														'space-between',
+													margin: 0,
+													paddingVertical: 20
+												}
+											]}
+										>
+											<Text
+												style={{
+													color: '#526b78',
+													fontWeight: 'bold'
+												}}
+											>
+												Contacto: {a.contact}
+											</Text>
+											<TouchableOpacity
+												onPress={() => {
+													navigate('Detail', {
+														animal: a
+													});
+												}}
+												style={{
+													backgroundColor: '#B5EAD7',
+													borderRadius: 25,
+													height: 50,
+													width: 100,
+													alignItems: 'center',
+													justifyContent: 'center'
+												}}
+											>
+												<View
+													style={{
+														flexDirection: 'row',
+														alignItems: 'center'
+													}}
+												>
+													<Icon
+														name='eye'
+														type='font-awesome'
+														color={'#526b78'}
+													/>
+													<Text
+														style={{
+															color: '#526b78'
+														}}
+													>
+														{' '}
+														Ver
+													</Text>
+												</View>
+											</TouchableOpacity>
+										</View>
 									</Card>
 								);
 							})}
@@ -306,13 +365,15 @@ function SearchScreen(props) {
 										alignItems: 'center',
 										justifyContent: 'center'
 									})
-								}>
+								}
+							>
 								<Text
 									style={{
 										fontWeight: 'bold',
 										fontSize: 20,
 										color: '#526b78'
-									}}>
+									}}
+								>
 									Nenhum resultado na pesquisa!
 								</Text>
 							</View>
@@ -322,7 +383,8 @@ function SearchScreen(props) {
 								flexDirection: 'row',
 								alignItems: 'center',
 								justifyContent: 'space-around'
-							}}>
+							}}
+						>
 							{prev && (
 								<TouchableOpacity
 									onPress={() => {
@@ -333,7 +395,8 @@ function SearchScreen(props) {
 										height: 50,
 										alignItems: 'center',
 										justifyContent: 'center'
-									}}>
+									}}
+								>
 									<Icon
 										name='arrow-left'
 										type='font-awesome'
@@ -351,7 +414,8 @@ function SearchScreen(props) {
 										height: 50,
 										alignItems: 'center',
 										justifyContent: 'center'
-									}}>
+									}}
+								>
 									<Icon
 										name='arrow-right'
 										type='font-awesome'

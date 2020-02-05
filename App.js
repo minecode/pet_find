@@ -1,17 +1,16 @@
 import React from 'react';
 import TabNavigator from './Navigation';
-import { StatusBar, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar, View, Text } from 'react-native';
+import { SafeAreaView } from 'react-navigation';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
+	SafeAreaView.setStatusBarHeight(0);
+
 	return (
 		<View style={{ flex: 1 }}>
-			<StatusBar
-				backgroundColor='#B5EAD7'
-				translucent
-				barStyle='dark-content'
-			/>
 			<SafeAreaProvider>
+				<StatusBar backgroundColor='#B5EAD7' barStyle='dark-content' />
 				<TabNavigator />
 			</SafeAreaProvider>
 		</View>

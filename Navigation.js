@@ -4,6 +4,8 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import { Icon } from 'react-native-elements';
 import SearchScreen from './pages/search';
 import AddScreen from './pages/add';
+import Detail from './pages/detail';
+import { createStackNavigator } from 'react-navigation-stack';
 
 const TabNavigator = createMaterialBottomTabNavigator(
 	{
@@ -46,4 +48,14 @@ const TabNavigator = createMaterialBottomTabNavigator(
 	}
 );
 
-export default createAppContainer(TabNavigator);
+const Stack = createStackNavigator({
+	Home: {
+		screen: TabNavigator,
+		navigationOptions: {
+			headerShown: false
+		}
+	},
+	Detail: Detail
+});
+
+export default createAppContainer(Stack);
