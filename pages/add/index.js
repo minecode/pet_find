@@ -108,15 +108,13 @@ function AddScreen(props) {
 					isVisible={loading}
 					coverScreen={false}
 					backdropColor={'white'}
-					backdropOpacity={0.8}
-				>
+					backdropOpacity={0.8}>
 					<View
 						style={{
 							flexDirection: 'row',
 							alignItems: 'center',
 							justifyContent: 'center'
-						}}
-					>
+						}}>
 						<ActivityIndicator size='large' color='#526b78' />
 						<Text style={{ color: '#526b78' }}>
 							{' '}
@@ -125,6 +123,11 @@ function AddScreen(props) {
 					</View>
 				</Modal>
 				<ScrollView>
+					<AdMobBanner
+						bannerSize='fullBanner'
+						adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
+						servePersonalizedAds // true or false
+					/>
 					<View style={styles.container}>
 						{errorMessage && (
 							<View
@@ -140,16 +143,14 @@ function AddScreen(props) {
 										alignItems: 'center',
 										justifyContent: 'center'
 									})
-								}
-							>
+								}>
 								<Text
 									style={{
 										fontWeight: 'bold',
 										fontSize: 20,
 										color: '#FF9AA2',
 										textAlign: 'center'
-									}}
-								>
+									}}>
 									{errorMessage}
 								</Text>
 							</View>
@@ -170,8 +171,7 @@ function AddScreen(props) {
 											alignItems: 'center',
 											justifyContent: 'center'
 										})
-									}
-								>
+									}>
 									{typeAdd === 'adoption' && (
 										<Text
 											style={{
@@ -179,8 +179,7 @@ function AddScreen(props) {
 												fontSize: 20,
 												color: '#526b78',
 												textAlign: 'center'
-											}}
-										>
+											}}>
 											Novo animal para adoção adicionado!
 										</Text>
 									)}
@@ -191,8 +190,7 @@ function AddScreen(props) {
 												fontSize: 20,
 												color: '#526b78',
 												textAlign: 'center'
-											}}
-										>
+											}}>
 											Novo animal perdido adicionado!
 										</Text>
 									)}
@@ -203,8 +201,7 @@ function AddScreen(props) {
 												fontSize: 20,
 												color: '#526b78',
 												textAlign: 'center'
-											}}
-										>
+											}}>
 											Novo animal encontrado adicionado!
 										</Text>
 									)}
@@ -221,8 +218,7 @@ function AddScreen(props) {
 												40,
 											alignItems: 'center',
 											justifyContent: 'center'
-										}}
-									>
+										}}>
 										<View style={styles.row}>
 											<Icon
 												name='plus'
@@ -246,8 +242,7 @@ function AddScreen(props) {
 											flexDirection: 'row',
 											alignItems: 'center',
 											justifyContent: 'flex-start'
-										}}
-									>
+										}}>
 										<Icon
 											name='paw'
 											type='font-awesome'
@@ -258,8 +253,7 @@ function AddScreen(props) {
 												fontWeight: 'bold',
 												fontSize: 20,
 												color: '#FF9AA2'
-											}}
-										>
+											}}>
 											{' '}
 											Animal:{' '}
 										</Text>
@@ -272,8 +266,7 @@ function AddScreen(props) {
 											itemIndex
 										) => {
 											setTypeAdd(itemValue);
-										}}
-									>
+										}}>
 										<Picker.Item
 											label='Perdido'
 											value='lost'
@@ -292,15 +285,13 @@ function AddScreen(props) {
 									style={
 										(styles.row,
 										{ marginTop: 20, marginHorizontal: 20 })
-									}
-								>
+									}>
 									<View
 										style={{
 											flexDirection: 'row',
 											alignItems: 'center',
 											justifyContent: 'flex-start'
-										}}
-									>
+										}}>
 										<Icon
 											name='address-book'
 											type='font-awesome'
@@ -311,8 +302,7 @@ function AddScreen(props) {
 												fontWeight: 'bold',
 												fontSize: 20,
 												color: '#FF9AA2'
-											}}
-										>
+											}}>
 											{' '}
 											Contacto:
 										</Text>
@@ -322,8 +312,7 @@ function AddScreen(props) {
 											style={{
 												color: 'red',
 												marginVertical: 5
-											}}
-										>
+											}}>
 											{contactError}
 										</Text>
 									)}
@@ -341,15 +330,13 @@ function AddScreen(props) {
 									style={
 										(styles.row,
 										{ marginTop: 20, marginHorizontal: 20 })
-									}
-								>
+									}>
 									<View
 										style={{
 											flexDirection: 'row',
 											alignItems: 'center',
 											justifyContent: 'flex-start'
-										}}
-									>
+										}}>
 										<Icon
 											name='search'
 											type='font-awesome'
@@ -360,8 +347,7 @@ function AddScreen(props) {
 												fontWeight: 'bold',
 												fontSize: 20,
 												color: '#FF9AA2'
-											}}
-										>
+											}}>
 											{' '}
 											Descrição:
 										</Text>
@@ -383,15 +369,13 @@ function AddScreen(props) {
 								<View
 									style={
 										(styles.row, { alignItems: 'center' })
-									}
-								>
+									}>
 									{imageError && (
 										<Text
 											style={{
 												color: 'red',
 												marginBottom: 5
-											}}
-										>
+											}}>
 											{imageError}
 										</Text>
 									)}
@@ -411,8 +395,7 @@ function AddScreen(props) {
 													2,
 												alignItems: 'center',
 												justifyContent: 'center'
-											}}
-										>
+											}}>
 											<View
 												style={[
 													styles.row,
@@ -421,8 +404,7 @@ function AddScreen(props) {
 														justifyContent:
 															'space-around'
 													}
-												]}
-											>
+												]}>
 												<Icon
 													name='image'
 													type='font-awesome'
@@ -432,8 +414,7 @@ function AddScreen(props) {
 													style={{
 														color: '#526b78',
 														textAlign: 'center'
-													}}
-												>
+													}}>
 													{' '}
 													Carregar fotografia
 												</Text>
@@ -454,8 +435,7 @@ function AddScreen(props) {
 													2,
 												alignItems: 'center',
 												justifyContent: 'center'
-											}}
-										>
+											}}>
 											<View
 												style={[
 													styles.row,
@@ -464,8 +444,7 @@ function AddScreen(props) {
 														justifyContent:
 															'space-around'
 													}
-												]}
-											>
+												]}>
 												<Icon
 													name='camera'
 													type='font-awesome'
@@ -475,8 +454,7 @@ function AddScreen(props) {
 													style={{
 														color: '#526b78',
 														textAlign: 'center'
-													}}
-												>
+													}}>
 													{' '}
 													Tirar fotografia
 												</Text>
@@ -494,8 +472,7 @@ function AddScreen(props) {
 												marginTop: 20,
 												marginHorizontal: 20
 											})
-										}
-									>
+										}>
 										<Image
 											source={{ uri: uri }}
 											style={{
@@ -516,8 +493,7 @@ function AddScreen(props) {
 									style={
 										(styles.row,
 										{ alignItems: 'center', marginTop: 20 })
-									}
-								>
+									}>
 									<TouchableOpacity
 										style={{
 											backgroundColor: '#B5EAD7',
@@ -587,8 +563,7 @@ function AddScreen(props) {
 											} else {
 												setLoading(false);
 											}
-										}}
-									>
+										}}>
 										<View style={styles.row}>
 											<Icon
 												name='plus'

@@ -16,18 +16,25 @@ api.addAsyncResponseTransform(async response => {
 });
 
 async function post(endpoint, params) {
-	const temp = new FormData();
-	temp.append('image', {
-		uri: params.uri,
-		name: params.name,
-		type: params.type
-	});
-	temp.append('contact', params.contact);
-	temp.append('description', params.description);
-	temp.append('lat', params.lat);
-	temp.append('long', params.long);
-	params = temp;
-
+	if (endpoint === '/api/pn/') {
+		const temp = new FormData();
+		temp.append('token', params.token);
+		temp.append('lat', params.lat);
+		temp.append('long', params.long);
+		params = temp;
+	} else {
+		const temp = new FormData();
+		temp.append('image', {
+			uri: params.uri,
+			name: params.name,
+			type: params.type
+		});
+		temp.append('contact', params.contact);
+		temp.append('description', params.description);
+		temp.append('lat', params.lat);
+		temp.append('long', params.long);
+		params = temp;
+	}
 	return await api
 		.post(endpoint, params, {
 			headers: {

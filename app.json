@@ -8,11 +8,14 @@
 		"platforms": ["ios", "android", "web"],
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/petfind.png",
+		"icon": "./assets/paw_icon.png",
 		"splash": {
-			"image": "./assets/petfind.png",
+			"image": "./assets/paw_transparent.png",
 			"resizeMode": "contain",
 			"backgroundColor": "#ffffff"
+		},
+		"notification": {
+			"icon": "./assets/paw_transparent_96_96.png"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0
@@ -21,13 +24,16 @@
 		"ios": {
 			"supportsTablet": true,
 			"config": {
-				"googleMobileAdsAppId": "ca-app-pub-3081462140003126~6758188074"
+				"googleMobileAdsAppId": "ca-app-pub-7606799175531903~5429838114"
 			}
 		},
 		"android": {
 			"package": "pt.fhenriques.petfind",
 			"config": {
-				"googleMobileAdsAppId": "ca-app-pub-3081462140003126~6758188074"
+				"googleMobileAdsAppId": "ca-app-pub-7606799175531903~5429838114",
+				"googleMaps": {
+					"apiKey": "AIzaSyD10ZPtFgh4F4flHsByBAKD9GdmIFxq54c"
+				}
 			}
 		},
 		"androidStatusBar": {

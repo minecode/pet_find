@@ -55,7 +55,16 @@ const Stack = createStackNavigator({
 			headerShown: false
 		}
 	},
-	Detail: Detail
+	Detail: {
+		screen: Detail,
+		navigationOptions: {
+			title: 'Detalhes',
+			headerStyle: {
+				backgroundColor: '#B5EAD7'
+			},
+			animationTypeForReplace: 'pop'
+		}
+	}
 });
 
 export default createAppContainer(Stack);
