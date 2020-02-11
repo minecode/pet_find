@@ -4,7 +4,8 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import { Icon } from 'react-native-elements';
 import SearchScreen from './pages/search';
 import AddScreen from './pages/add';
-import Detail from './pages/detail';
+import DetailScreen from './pages/detail';
+import MapScreen from './pages/map';
 import { createStackNavigator } from 'react-navigation-stack';
 
 const TabNavigator = createMaterialBottomTabNavigator(
@@ -17,6 +18,21 @@ const TabNavigator = createMaterialBottomTabNavigator(
 					tabBarIcon: ({ tintColor }) => (
 						<Icon
 							name='search'
+							type='font-awesome'
+							color={tintColor}
+						/>
+					)
+				};
+			}
+		},
+		Map: {
+			screen: MapScreen,
+			navigationOptions: ({ navigation }) => {
+				return {
+					title: 'Mapa',
+					tabBarIcon: ({ tintColor }) => (
+						<Icon
+							name='map-marker'
 							type='font-awesome'
 							color={tintColor}
 						/>
@@ -56,7 +72,7 @@ const Stack = createStackNavigator({
 		}
 	},
 	Detail: {
-		screen: Detail,
+		screen: DetailScreen,
 		navigationOptions: {
 			title: 'Detalhes',
 			headerStyle: {

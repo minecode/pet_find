@@ -6,7 +6,7 @@
 		"privacy": "public",
 		"sdkVersion": "36.0.0",
 		"platforms": ["ios", "android", "web"],
-		"version": "1.0.0",
+		"version": "2.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/paw_icon.png",
 		"splash": {
@@ -29,6 +29,7 @@
 		},
 		"android": {
 			"package": "pt.fhenriques.petfind",
+			"versionCode": 4,
 			"config": {
 				"googleMobileAdsAppId": "ca-app-pub-7606799175531903~5429838114",
 				"googleMaps": {

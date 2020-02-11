@@ -147,6 +147,7 @@ function SearchScreen(props) {
 						bannerSize='fullBanner'
 						adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
 						servePersonalizedAds // true or false
+						bannerSize={'smartBannerLandscape'}
 					/>
 					<View style={styles.container}>
 						<View style={styles.row}>

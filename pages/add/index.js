@@ -127,6 +127,7 @@ function AddScreen(props) {
 						bannerSize='fullBanner'
 						adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
 						servePersonalizedAds // true or false
+						bannerSize={'smartBannerLandscape'}
 					/>
 					<View style={styles.container}>
 						{errorMessage && (
@@ -555,7 +556,7 @@ function AddScreen(props) {
 														})
 														.catch(error => {
 															setErrorMessage(
-																'Ocorreu um erro. Por favor, tente novamente mais tarde.'
+																error
 															);
 															setLoading(false);
 														});

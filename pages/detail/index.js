@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, ScrollView, Dimensions, Image } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import styles from '../../style';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { AdMobBanner, setTestDeviceIDAsync } from 'expo-ads-admob';
 
-function Detail(props) {
+function DetailScreen(props) {
 	const { navigation } = props;
 	const [a, setA] = useState(null);
 	useEffect(() => {
+		setTestDeviceIDAsync('EMULATOR');
 		setA(navigation.getParam('animal', null));
 	}, []);
 
@@ -20,6 +21,7 @@ function Detail(props) {
 						bannerSize='fullBanner'
 						adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
 						servePersonalizedAds // true or false
+						bannerSize={'smartBannerLandscape'}
 					/>
 					<View style={styles.container}>
 						{a && (
@@ -63,6 +65,7 @@ function Detail(props) {
 								</Text>
 
 								<MapView
+									provider={PROVIDER_GOOGLE}
 									region={{
 										latitude: a.lat,
 										longitude: a.long,
@@ -91,4 +94,4 @@ function Detail(props) {
 	);
 }
 
-export default Detail;
+export default DetailScreen;
