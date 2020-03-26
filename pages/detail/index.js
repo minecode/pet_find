@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-navigation';
 import styles from '../../style';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { AdMobBanner, setTestDeviceIDAsync } from 'expo-ads-admob';
+import { AD_MOB_UNIT_ID } from 'react-native-dotenv';
 
 function DetailScreen(props) {
 	const { navigation } = props;
@@ -19,7 +20,7 @@ function DetailScreen(props) {
 				<ScrollView>
 					<AdMobBanner
 						bannerSize='fullBanner'
-						adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
+						adUnitID={AD_MOB_UNIT_ID} // Test ID, Replace with your-admob-unit-id
 						servePersonalizedAds // true or false
 						bannerSize={'smartBannerLandscape'}
 					/>

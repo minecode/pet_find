@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TabNavigator from './Navigation';
-import { StatusBar, View, Text } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Notifications } from 'expo';

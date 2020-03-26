@@ -2,28 +2,20 @@ import React, { useState, useEffect } from 'react';
 import {
 	Text,
 	View,
-	ScrollView,
 	Dimensions,
 	Picker,
-	Image,
-	ActivityIndicator,
 	TouchableOpacity,
 	StyleSheet
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import styles from '../../style';
-import MapView, {
-	OverlayComponent,
-	Marker,
-	PROVIDER_GOOGLE
-} from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { AdMobBanner, setTestDeviceIDAsync } from 'expo-ads-admob';
-import Modal from 'react-native-modal';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import Constants from 'expo-constants';
 import { get } from '../../services/api';
 import { Icon } from 'react-native-elements';
+import { AD_MOB_UNIT_ID } from 'react-native-dotenv';
 
 export default function MapScreen(props) {
 	const [initialLat, setInitialLat] = useState(null);
@@ -115,7 +107,7 @@ export default function MapScreen(props) {
 		<SafeAreaView style={{ flex: 1, backgroundColor: '#f3f3f3' }}>
 			<AdMobBanner
 				bannerSize='fullBanner'
-				adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
+				adUnitID={AD_MOB_UNIT_ID} // Test ID, Replace with your-admob-unit-id
 				servePersonalizedAds // true or false
 				bannerSize={'smartBannerLandscape'}
 			/>

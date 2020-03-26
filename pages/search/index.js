@@ -20,6 +20,7 @@ import Modal from 'react-native-modal';
 import { Icon } from 'react-native-elements';
 import { AdMobBanner, setTestDeviceIDAsync } from 'expo-ads-admob';
 import { SafeAreaView } from 'react-navigation';
+import { AD_MOB_UNIT_ID } from 'react-native-dotenv';
 
 function SearchScreen(props) {
 	SafeAreaView.setStatusBarHeight(0);
@@ -145,7 +146,7 @@ function SearchScreen(props) {
 					}>
 					<AdMobBanner
 						bannerSize='fullBanner'
-						adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
+						adUnitID={AD_MOB_UNIT_ID} // Test ID, Replace with your-admob-unit-id
 						servePersonalizedAds // true or false
 						bannerSize={'smartBannerLandscape'}
 					/>

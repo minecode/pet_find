@@ -24,16 +24,16 @@
 		"ios": {
 			"supportsTablet": true,
 			"config": {
-				"googleMobileAdsAppId": "ca-app-pub-7606799175531903~5429838114"
+				"googleMobileAdsAppId": "${GOOGLE_MOBILE_ADS_APP_ID}"
 			}
 		},
 		"android": {
 			"package": "pt.fhenriques.petfind",
-			"versionCode": 4,
+			"versionCode": 5,
 			"config": {
-				"googleMobileAdsAppId": "ca-app-pub-7606799175531903~5429838114",
+				"googleMobileAdsAppId": "${GOOGLE_MOBILE_ADS_APP_ID}",
 				"googleMaps": {
-					"apiKey": "AIzaSyD10ZPtFgh4F4flHsByBAKD9GdmIFxq54c"
+					"apiKey": "${GOOGLE_MAPS_API_KEY}"
 				}
 			}
 		},

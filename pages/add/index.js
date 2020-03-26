@@ -5,7 +5,6 @@ import {
 	Text,
 	View,
 	ScrollView,
-	StatusBar,
 	Dimensions,
 	Image,
 	Picker,
@@ -20,6 +19,7 @@ import { post } from '../../services/api';
 import Modal from 'react-native-modal';
 import { setTestDeviceIDAsync, AdMobBanner } from 'expo-ads-admob';
 import { SafeAreaView } from 'react-navigation';
+import { AD_MOB_UNIT_ID } from 'react-native-dotenv';
 
 function AddScreen(props) {
 	const [contact, setContact] = useState(null);
@@ -125,7 +125,7 @@ function AddScreen(props) {
 				<ScrollView>
 					<AdMobBanner
 						bannerSize='fullBanner'
-						adUnitID='ca-app-pub-7606799175531903/3809349277' // Test ID, Replace with your-admob-unit-id
+						adUnitID={AD_MOB_UNIT_ID} // Test ID, Replace with your-admob-unit-id
 						servePersonalizedAds // true or false
 						bannerSize={'smartBannerLandscape'}
 					/>
