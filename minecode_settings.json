@@ -1,5 +1,6 @@
 {
 	"link_website": "minecode.github.io/pet_find/",
 	"link_mobile": "https://play.google.com/store/apps/details?id=pt.fhenriques.petfind",
-	"image": "assets/paw_icon.png"
+	"image": "assets/paw_icon.png",
+	"play_console_images": "assets/play_console_images/"
 }
