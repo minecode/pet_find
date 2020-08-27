@@ -8,7 +8,7 @@ import {
 	RefreshControl,
 	ActivityIndicator,
 	Dimensions,
-	TouchableOpacity
+	TouchableOpacity,
 } from 'react-native';
 import styles from '../../style';
 import { Card } from 'react-native-elements';
@@ -21,12 +21,13 @@ import { Icon } from 'react-native-elements';
 import { AdMobBanner, setTestDeviceIDAsync } from 'expo-ads-admob';
 import { SafeAreaView } from 'react-navigation';
 import { AD_MOB_UNIT_ID } from 'react-native-dotenv';
+import { AsyncStorage } from 'react-native';
 
 function SearchScreen(props) {
 	SafeAreaView.setStatusBarHeight(0);
 
 	function wait(timeout) {
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			setTimeout(resolve, timeout);
 		});
 	}
@@ -71,15 +72,16 @@ function SearchScreen(props) {
 						type +
 						'/' +
 						'time/'
-				: '/api/' + link.split('/api/')[1]
+				: '/api/' + link.split('/api/')[1],
+			await AsyncStorage.getItem('@pet_find:token')
 		)
-			.then(response => {
+			.then((response) => {
 				setLoading(false);
 				setAnimals(response.data.results);
 				setNext(response.data.next);
 				setPrev(response.data.previous);
 			})
-			.catch(error => {
+			.catch((error) => {
 				setLoading(false);
 			});
 	};
@@ -126,13 +128,15 @@ function SearchScreen(props) {
 					isVisible={false}
 					coverScreen={false}
 					backdropColor={'white'}
-					backdropOpacity={0.8}>
+					backdropOpacity={0.8}
+				>
 					<View
 						style={{
 							flexDirection: 'row',
 							alignItems: 'center',
-							justifyContent: 'center'
-						}}>
+							justifyContent: 'center',
+						}}
+					>
 						<ActivityIndicator size='large' color='#526b78' />
 						<Text style={{ color: '#526b78' }}> A carregar...</Text>
 					</View>
@@ -143,7 +147,8 @@ function SearchScreen(props) {
 							refreshing={loading}
 							onRefresh={onRefresh}
 						/>
-					}>
+					}
+				>
 					<AdMobBanner
 						bannerSize='fullBanner'
 						adUnitID={AD_MOB_UNIT_ID} // Test ID, Replace with your-admob-unit-id
@@ -156,8 +161,9 @@ function SearchScreen(props) {
 								style={{
 									flexDirection: 'row',
 									alignItems: 'center',
-									justifyContent: 'space-between'
-								}}>
+									justifyContent: 'space-between',
+								}}
+							>
 								<Icon
 									name='paw'
 									type='font-awesome'
@@ -167,8 +173,9 @@ function SearchScreen(props) {
 									style={{
 										fontWeight: 'bold',
 										fontSize: 20,
-										color: '#FF9AA2'
-									}}>
+										color: '#FF9AA2',
+									}}
+								>
 									{' '}
 									Animal:{' '}
 								</Text>
@@ -178,7 +185,8 @@ function SearchScreen(props) {
 								style={{ width: 150, color: '#526b78' }}
 								onValueChange={(itemValue, itemIndex) => {
 									setType(itemValue);
-								}}>
+								}}
+							>
 								<Picker.Item
 									label='Encontrado'
 									value='findings'
@@ -195,8 +203,9 @@ function SearchScreen(props) {
 								style={{
 									flexDirection: 'row',
 									alignItems: 'center',
-									justifyContent: 'space-between'
-								}}>
+									justifyContent: 'space-between',
+								}}
+							>
 								<Icon
 									name='arrows'
 									type='font-awesome'
@@ -206,8 +215,9 @@ function SearchScreen(props) {
 									style={{
 										fontWeight: 'bold',
 										fontSize: 20,
-										color: '#FF9AA2'
-									}}>
+										color: '#FF9AA2',
+									}}
+								>
 									{' '}
 									Distância:{' '}
 								</Text>
@@ -217,7 +227,8 @@ function SearchScreen(props) {
 								style={{ width: 150, color: '#526b78' }}
 								onValueChange={(itemValue, itemIndex) => {
 									setDistance(itemValue);
-								}}>
+								}}
+							>
 								<Picker.Item label='1 km' value='1' />
 								<Picker.Item label='5 km' value='5' />
 								<Picker.Item label='15 km' value='15' />
@@ -230,8 +241,9 @@ function SearchScreen(props) {
 								style={{
 									flexDirection: 'row',
 									alignItems: 'center',
-									justifyContent: 'space-between'
-								}}>
+									justifyContent: 'space-between',
+								}}
+							>
 								<Icon
 									name='hourglass-end'
 									type='font-awesome'
@@ -241,8 +253,9 @@ function SearchScreen(props) {
 									style={{
 										fontWeight: 'bold',
 										fontSize: 20,
-										color: '#FF9AA2'
-									}}>
+										color: '#FF9AA2',
+									}}
+								>
 									{' '}
 									Últimos:{' '}
 								</Text>
@@ -252,7 +265,8 @@ function SearchScreen(props) {
 								style={{ width: 150, color: '#526b78' }}
 								onValueChange={(itemValue, itemIndex) => {
 									setTime(itemValue);
-								}}>
+								}}
+							>
 								<Picker.Item label='15 dias' value='15' />
 								<Picker.Item label='30 dias' value='30' />
 								<Picker.Item label='2 meses' value='2' />
@@ -267,21 +281,23 @@ function SearchScreen(props) {
 								return (
 									<Card
 										key={i}
-										containerStyle={{ padding: 0 }}>
+										containerStyle={{ padding: 0 }}
+									>
 										<Image
 											style={{
-												height: 300
+												height: 300,
 											}}
 											resizeMode='cover'
 											source={{
-												uri: a.url
+												uri: a.url,
 											}}
 										/>
 										<Text
 											style={{
 												padding: 20,
-												color: '#526b78'
-											}}>
+												color: '#526b78',
+											}}
+										>
 											Localizado a {a.distance} km à{' '}
 											{a.time}.
 										</Text>
@@ -292,20 +308,22 @@ function SearchScreen(props) {
 													justifyContent:
 														'space-between',
 													margin: 0,
-													paddingVertical: 20
-												}
-											]}>
+													paddingVertical: 20,
+												},
+											]}
+										>
 											<Text
 												style={{
 													color: '#526b78',
-													fontWeight: 'bold'
-												}}>
+													fontWeight: 'bold',
+												}}
+											>
 												Contacto: {a.contact}
 											</Text>
 											<TouchableOpacity
 												onPress={() => {
 													navigate('Detail', {
-														animal: a
+														animal: a,
 													});
 												}}
 												style={{
@@ -314,13 +332,15 @@ function SearchScreen(props) {
 													height: 50,
 													width: 100,
 													alignItems: 'center',
-													justifyContent: 'center'
-												}}>
+													justifyContent: 'center',
+												}}
+											>
 												<View
 													style={{
 														flexDirection: 'row',
-														alignItems: 'center'
-													}}>
+														alignItems: 'center',
+													}}
+												>
 													<Icon
 														name='eye'
 														type='font-awesome'
@@ -328,8 +348,9 @@ function SearchScreen(props) {
 													/>
 													<Text
 														style={{
-															color: '#526b78'
-														}}>
+															color: '#526b78',
+														}}
+													>
 														{' '}
 														Ver
 													</Text>
@@ -351,15 +372,17 @@ function SearchScreen(props) {
 										width:
 											Dimensions.get('window').width - 40,
 										alignItems: 'center',
-										justifyContent: 'center'
+										justifyContent: 'center',
 									})
-								}>
+								}
+							>
 								<Text
 									style={{
 										fontWeight: 'bold',
 										fontSize: 20,
-										color: '#526b78'
-									}}>
+										color: '#526b78',
+									}}
+								>
 									Nenhum resultado na pesquisa!
 								</Text>
 							</View>
@@ -368,8 +391,9 @@ function SearchScreen(props) {
 							style={{
 								flexDirection: 'row',
 								alignItems: 'center',
-								justifyContent: 'space-around'
-							}}>
+								justifyContent: 'space-around',
+							}}
+						>
 							{prev && (
 								<TouchableOpacity
 									onPress={() => {
@@ -379,8 +403,9 @@ function SearchScreen(props) {
 										borderRadius: 25,
 										height: 50,
 										alignItems: 'center',
-										justifyContent: 'center'
-									}}>
+										justifyContent: 'center',
+									}}
+								>
 									<Icon
 										name='arrow-left'
 										type='font-awesome'
@@ -397,8 +422,9 @@ function SearchScreen(props) {
 										borderRadius: 25,
 										height: 50,
 										alignItems: 'center',
-										justifyContent: 'center'
-									}}>
+										justifyContent: 'center',
+									}}
+								>
 									<Icon
 										name='arrow-right'
 										type='font-awesome'

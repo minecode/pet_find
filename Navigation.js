@@ -6,6 +6,7 @@ import SearchScreen from './pages/search';
 import AddScreen from './pages/add';
 import DetailScreen from './pages/detail';
 import MapScreen from './pages/map';
+import LoginScreen from './pages/login';
 import { createStackNavigator } from 'react-navigation-stack';
 
 const TabNavigator = createMaterialBottomTabNavigator(
@@ -21,9 +22,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
 							type='font-awesome'
 							color={tintColor}
 						/>
-					)
+					),
 				};
-			}
+			},
 		},
 		Map: {
 			screen: MapScreen,
@@ -36,9 +37,9 @@ const TabNavigator = createMaterialBottomTabNavigator(
 							type='font-awesome'
 							color={tintColor}
 						/>
-					)
+					),
 				};
-			}
+			},
 		},
 		Add: {
 			screen: AddScreen,
@@ -51,36 +52,42 @@ const TabNavigator = createMaterialBottomTabNavigator(
 							type='font-awesome'
 							color={tintColor}
 						/>
-					)
+					),
 				};
-			}
-		}
+			},
+		},
 	},
 	{
 		activeColor: '#526b78',
 		inactiveColor: '#f5f5ff',
 		shifting: false,
-		barStyle: { backgroundColor: '#B5EAD7' }
+		barStyle: { backgroundColor: '#B5EAD7' },
 	}
 );
 
 const Stack = createStackNavigator({
+	Login: {
+		screen: LoginScreen,
+		navigationOptions: {
+			headerShown: false,
+		},
+	},
 	Home: {
 		screen: TabNavigator,
 		navigationOptions: {
-			headerShown: false
-		}
+			headerShown: false,
+		},
 	},
 	Detail: {
 		screen: DetailScreen,
 		navigationOptions: {
 			title: 'Detalhes',
 			headerStyle: {
-				backgroundColor: '#B5EAD7'
+				backgroundColor: '#B5EAD7',
 			},
-			animationTypeForReplace: 'pop'
-		}
-	}
+			animationTypeForReplace: 'pop',
+		},
+	},
 });
 
 export default createAppContainer(Stack);

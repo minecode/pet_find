@@ -30,10 +30,14 @@
 		"android": {
 			"package": "pt.fhenriques.petfind",
 			"versionCode": 5,
+			"googleServicesFile": "./google-services.json",
 			"config": {
 				"googleMobileAdsAppId": "${GOOGLE_MOBILE_ADS_APP_ID}",
 				"googleMaps": {
 					"apiKey": "${GOOGLE_MAPS_API_KEY}"
+				},
+				"googleSignIn": {
+					"apiKey": "${GOOGLE_SIGN_IN_API_KEY}"
 				}
 			}
 		},
